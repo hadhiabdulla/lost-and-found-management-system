@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config/db.php';
 
 function getAllCategories() {
-    global $conn;
+    $conn = getDBConnection();
     $result = $conn->query('SELECT * FROM categories ORDER BY name');
     $cats = $result->fetch_all(MYSQLI_ASSOC);
     $conn->close();
@@ -10,7 +10,7 @@ function getAllCategories() {
 }
 
 function getLostItems($filters = [], $limit = 20, $offset = 0) {
-    global $conn;
+    $conn = getDBConnection();
     $where = ['1=1'];
     $params = [];
     $types = '';
@@ -58,7 +58,7 @@ function getLostItems($filters = [], $limit = 20, $offset = 0) {
 }
 
 function getFoundItems($filters = [], $limit = 20, $offset = 0) {
-    global $conn;
+    $conn = getDBConnection();
     $where = ['1=1'];
     $params = [];
     $types = '';
@@ -106,7 +106,7 @@ function getFoundItems($filters = [], $limit = 20, $offset = 0) {
 }
 
 function getItemById($table, $id) {
-    global $conn;
+    $conn = getDBConnection();
     $loc = ($table === 'lost_items') ? 'location_lost' : 'location_found';
     $stmt = $conn->prepare("SELECT t.*, u.name as user_name, u.email as user_email, u.phone as user_phone, c.name as category_name
         FROM $table t
@@ -135,7 +135,7 @@ function uploadImage($file) {
 }
 
 function reportLostItem($data, $imageFile = null) {
-    global $conn;
+    $conn = getDBConnection();
     $imagePath = uploadImage($imageFile);
     $stmt = $conn->prepare('INSERT INTO lost_items (user_id, title, description, category_id, location_lost, date_lost, image_path) VALUES (?,?,?,?,?,?,?)');
     $stmt->bind_param('issssss',
@@ -153,7 +153,7 @@ function reportLostItem($data, $imageFile = null) {
 }
 
 function reportFoundItem($data, $imageFile = null) {
-    global $conn;
+    $conn = getDBConnection();
     $imagePath = uploadImage($imageFile);
     $stmt = $conn->prepare('INSERT INTO found_items (user_id, title, description, category_id, location_found, date_found, image_path) VALUES (?,?,?,?,?,?,?)');
     $stmt->bind_param('issssss',
@@ -171,7 +171,7 @@ function reportFoundItem($data, $imageFile = null) {
 }
 
 function findMatches($itemId, $type) {
-    global $conn;
+    $conn = getDBConnection();
     if ($type === 'lost') {
         $item = getItemById('lost_items', $itemId);
         if (!$item) return;
@@ -207,14 +207,14 @@ function findMatches($itemId, $type) {
 }
 
 function addNotification($userId, $message, $type = 'general') {
-    global $conn;
+    $conn = getDBConnection();
     $stmt = $conn->prepare('INSERT INTO notifications (user_id, message, type) VALUES (?,?,?)');
     $stmt->bind_param('iss', $userId, $message, $type);
     $stmt->execute(); $stmt->close(); $conn->close();
 }
 
 function getUnreadNotifications($userId) {
-    global $conn;
+    $conn = getDBConnection();
     $stmt = $conn->prepare('SELECT * FROM notifications WHERE user_id = ? AND is_read = 0 ORDER BY created_at DESC');
     $stmt->bind_param('i', $userId);
     $stmt->execute();
@@ -224,14 +224,14 @@ function getUnreadNotifications($userId) {
 }
 
 function markNotificationsRead($userId) {
-    global $conn;
+    $conn = getDBConnection();
     $stmt = $conn->prepare('UPDATE notifications SET is_read = 1 WHERE user_id = ?');
     $stmt->bind_param('i', $userId);
     $stmt->execute(); $stmt->close(); $conn->close();
 }
 
 function getDashboardStats() {
-    global $conn;
+    $conn = getDBConnection();
     $stats = [];
     $stats['total_lost'] = $conn->query('SELECT COUNT(*) as c FROM lost_items')->fetch_assoc()['c'];
     $stats['total_found'] = $conn->query('SELECT COUNT(*) as c FROM found_items')->fetch_assoc()['c'];
@@ -256,3 +256,4 @@ function timeAgo($datetime) {
     return date('d M Y', $time);
 }
 ?>
+
