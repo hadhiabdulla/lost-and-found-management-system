@@ -9,18 +9,6 @@
  */
 
 require_once 'config/db.php';
-/**
- * Admin Password Reset Utility
- *
- * For security, this script has NO default password stored in it.
- * Set the new password through the ADMIN_RESET_PASSWORD environment variable
- * (or fill it in your gitignored config/local.php as ADMIN_RESET_PASSWORD),
- * run this file once in your browser, then DELETE this file.
- */
-
-require_once 'config/db.php';
-
-
 
 // New password for admin - must be supplied at runtime, never committed
 $new_password = getenv('ADMIN_RESET_PASSWORD');
