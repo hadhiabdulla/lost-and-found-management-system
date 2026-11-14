@@ -28,6 +28,9 @@ if (strlen($new_password) < 8) {
 
 $admin_email = 'admin@lostandfound.com';
 
+// Connect only after the password checks pass
+$conn = getDBConnection();
+
 // Hash the password
 $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
