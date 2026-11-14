@@ -117,6 +117,7 @@ INSERT INTO categories (name, description) VALUES
 ('Sports Equipment', 'Balls, rackets, helmets, gear etc.'),
 ('Other', 'Miscellaneous items');
 
--- Default admin user (password: Admin@1234 - bcrypt hashed)
-INSERT INTO users (name, email, password, phone, role) VALUES
-('Admin', 'admin@lostandfound.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '9999999999', 'admin');
+-- No default admin user is seeded (a shipped default password would be public knowledge).
+-- After importing this schema, register an account through the app, then promote it:
+--   UPDATE users SET role = 'admin' WHERE email = 'you@example.com';
+-- Use a strong, unique password when registering.
