@@ -102,13 +102,12 @@ Or use phpMyAdmin:
 
 3. **Configure Database Connection**
 
-Edit `config/db.php`:
-```php
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');  // Your MySQL username
-define('DB_PASS', '');       // Your MySQL password
-define('DB_NAME', 'lost_found_db');
+Never put your real password in `config/db.php` - it is committed to the repository.
+Instead:
+```bash
+cp config/local.example.php config/local.php
 ```
+Then edit `config/local.php` (it is gitignored, so it stays on your machine only) and fill in your MySQL username and password. Alternatively set the `DB_HOST`, `DB_USER`, `DB_PASS` and `DB_NAME` environment variables.
 
 4. **Set Base URL**
 
@@ -132,11 +131,18 @@ http://localhost/lost-and-found-management-system/
 
 ---
 
-## 👤 Default Credentials
+## 👤 Admin Account
 
-**Admin Account:**
-- Email: `admin@lostandfound.com`
-- Password: `Admin@1234`
+No default admin credentials are shipped (a public default password would let anyone in).
+To create an admin:
+
+1. Register a normal account through the app with a strong, unique password.
+2. Promote it in the database:
+```sql
+UPDATE users SET role = 'admin' WHERE email = 'you@example.com';
+```
+
+If you ever need to reset the admin password, use `reset-admin-password.php` with the `ADMIN_RESET_PASSWORD` environment variable set, then delete that file immediately.
 
 ---
 
